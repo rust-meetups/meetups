@@ -15,4 +15,4 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Publish
-        run: npx zx --install scripts/publish.mjs --meetup=${{ matrix.meetup }}
+        run: npx gh-pages ${{ matrix.meetup }} --branch ${{ matrix.meetup }}
