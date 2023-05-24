@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    strategy:
+      matrix:
+        meetup: ["01-welcome-to-rust"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Publish
+        run: npx zx --install scripts/publish.mjs --meetup=${{ matrix.meetup }}
