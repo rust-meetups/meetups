@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <div class="flex justify-center items-center">
+            <h3 data-id="box" style="margin-bottom: 0">1.0 Welcome to Rust</h3>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Original_Ferris.svg/1280px-Original_Ferris.svg.png"
+              width="100px"
+            />
+          </div>
+        </section>
+        <section>
+          <h3>Who are we?</h3>
+          <div class="flex justify-evenly text-start">
+            <div class="flex flex-col">
+              <div class="flex flex-col">
+                <span>Love Westlund</span>
+                <span>Systems Developer</span>
+              </div>
+              <img
+                width="300px"
+                src="https://ca.slack-edge.com/T0252T2EC-U03TWFP5C9M-0f3edd66f6dc-512"
+              />
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-col">
+                <span>Max Netterberg</span>
+                <span>Fullstack Developer</span>
+              </div>
+              <img
+                width="300px"
+                src="https://ca.slack-edge.com/T0252T2EC-U01QC9NE96Z-0cd686a7cc9a-512"
+              />
+            </div>
+          </div>
+        </section>
+        <section>
+          <h2 class="r-fit-text">Agenda</h2>
+          <div class="flex flex-start">
+            <ul>
+              <li>What is Rust? 🤷</li>
+              <li>Install toolchain 🛠️</li>
+              <li>Hello world! 🌍</li>
+              <li>Why Rust? 🦀</li>
+              <li>Exercises 🧐</li>
+            </ul>
+          </div>
+        </section>
+        <section>
+          <section>
+            <h2 data-id="text">Install toolchain</h2>
+          </section>
+          <section>
+            <h3>Rustup <a href="https://rustup.rs/">installer</a></h3>
+            <pre>
+							<code data-trim class="language-bash">
+								rustup toolchain install stable
+							</code>
+						</pre>
+          </section>
+          <section>
+            <h2>The toolchain 🛠️</h2>
+            <ul>
+              <li>Cargo (package manager)</li>
+              <li>Clippy (linter)</li>
+              <li>Rust Formatter</li>
+              <li>Rust Compiler</li>
+              <li>Rust Analyzer (intellisense)</li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Why rust? 🦀</h1>
+          </section>
+          <section>
+            <h2>Compile Time Guarantees</h2>
+            <ul>
+              <li>No uninitialized variables.</li>
+              <li>No memory leaks.</li>
+              <li>No double-frees.</li>
+              <li>No use-after-free.</li>
+              <li>No NULL pointers.</li>
+              <li>No forgotten locked mutexes.</li>
+              <li>No data races between threads.</li>
+              <li>No iterator invalidation.</li>
+            </ul>
+            <aside class="notes">
+              <p>
+                It is possible to produce memory leaks in (safe) Rust. Some
+                examples are:
+              </p>
+              <ul>
+                <li>
+                  You can for use
+                  <a
+                    href="https://doc.rust-lang.org/std/boxed/struct.Box.html#method.leak"
+                    ><code class="hljs">Box::leak</code></a
+                  >
+                  to leak a pointer. A use of this could be to get
+                  runtime-initialized and runtime-sized static variables
+                </li>
+                <li>
+                  You can use
+                  <a href="https://doc.rust-lang.org/std/mem/fn.forget.html"
+                    ><code class="hljs">std::mem::forget</code></a
+                  >
+                  to make the compiler “forget” about a value (meaning the
+                  destructor is never run).
+                </li>
+                <li>
+                  You can also accidentally create a
+                  <a
+                    href="https://doc.rust-lang.org/book/ch15-06-reference-cycles.html"
+                    >reference cycle</a
+                  >
+                  with <code class="hljs">Rc</code> or
+                  <code class="hljs">Arc</code>.
+                </li>
+                <li>
+                  In fact, some will consider infinitely populating a collection
+                  a memory leak and Rust does not protect from those.
+                </li>
+              </ul>
+              <p>
+                For the purpose of this course, “No memory leaks” should be
+                understood as “Pretty much no <em>accidental</em> memory leaks”.
+              </p>
+            </aside>
+          </section>
+          <section>
+            <h2>Runtime Guarantees</h2>
+            <ul>
+              <li>Array access is bounds checked.</li>
+              <li>Integer overflow is defined.</li>
+            </ul>
+            <aside class="notes">
+              <ul>
+                <li>
+                  <p>
+                    Integer overflow is defined via a compile-time flag. The
+                    options are either a panic (a controlled crash of the
+                    program) or wrap-around semantics. By default, you get
+                    panics in debug mode (<code class="hljs">cargo build</code>)
+                    and wrap-around in release mode (<code class="hljs"
+                      >cargo build --release</code
+                    >).
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Bounds checking cannot be disabled with a compiler flag. It
+                    can also not be disabled directly with the
+                    <code class="hljs">unsafe</code> keyword. However,
+                    <code class="hljs">unsafe</code> allows you to call
+                    functions such as
+                    <code class="hljs">slice::get_unchecked</code> which does
+                    not do bounds checking.
+                  </p>
+                </li>
+              </ul>
+            </aside>
+          </section>
+          <section>
+            <h2>Language Features</h2>
+            <ul>
+              <li>Enums and pattern matching.</li>
+              <li>Generics.</li>
+              <li>No overhead FFI.</li>
+              <li>Zero-cost abstractions.</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Tooling</h2>
+            <ul>
+              <li>Great compiler errors.</li>
+              <li>Built-in dependency manager.</li>
+              <li>Built-in support for testing.</li>
+              <li>Excellent Language Server Protocol support.</li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
