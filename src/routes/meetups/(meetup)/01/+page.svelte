@@ -41,10 +41,3 @@
       <h2>Another page!</h2>
   </Slide>
 </Presentation>
-
-<style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-  }
-</style>

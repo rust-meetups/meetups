@@ -11,4 +11,7 @@
   div {
     height: 100vh;
   }
+  :global(body) {
+    /* padding: 0; */
+  }
 </style>
